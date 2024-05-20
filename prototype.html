@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <title>Document</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    
+
+    .checkout {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem;
+      min-height: calc(100lvh - 100px);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .checkout--shirink {
+      min-height: calc(100lvh - 152px);
+    }
+    .checkout__main {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .checkout__set-input {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cart {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      border-bottom: 1px solid rgba(180, 180, 180, 0.521);
+      padding: 1rem;
+      overflow: hidden;
+      transition: height 0.2s;
+    }
+    .cart--expanded {
+      height: 120px;
+    }
+    .cart--collapsed {
+      height: 60px;
+    }
+    .checkout__input {
+      padding: 1rem 8px;
+      border: 1px solid rgb(168, 166, 166);
+      border-radius: 4px;
+    }
+
+    .checkout__actions {
+      display: flex;
+      margin-top: auto;
+    }
+
+    .checkout__button {
+      font-size: 1rem;
+
+      width: 100%;
+      background-color: rgba(63, 146, 174, 0.74);
+      color: white;
+      padding: 1rem 0;
+      border: 1px solid transparent;
+      border-radius: 4px;
+    }
+
+    .checkout__button:active {
+      opacity: 0.8;
+    }
+
+    .steps__progress {
+      position: absolute
+    }
+
+    .checkout__datas {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 32px;
+      border: 1px solid transparent;
+      color: rgb(108, 107, 107);
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .cart__item-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1
+    }
+    
+    .cart__item-amount {
+      display: grid;
+      grid-template-columns: 100px 90px;
+      transition: all 0.2s;
+      font-size: 12px;
+    }
+    .cart_item-amount--shirink {
+      grid-template-columns: 50px 60px;
+    }
+    .cart__item-amount--hide {
+      opacity: 0;
+    }
+
+    .cart__item-amount--none {
+      display: none;
+    }
+
+    .cart__see-more {
+      align-self: flex-start;
+      button {
+        display: flex;
+        background-color: rgba(245, 211, 167, 0.228);
+        border-color: transparent;
+        color: rgb(224, 131, 9);
+        border-radius: 4px;
+        padding: 0.2rem 12px;
+        span {
+          font-size: 16px
+        }
+      }
+    }
+
+    .products {
+      color: rgb(37, 196, 37)
+    }
+
+    .discounts {
+      color: rgb(245, 84, 84)
+    }
+
+    .total {
+      color: rgb(37, 196, 37)
+    }
+
+    .installments {
+      b {
+        margin-right: 5px;
+      }
+      color: rgb(209, 7, 209)
+    }
+
+    .items {
+      display: flex;
+      visibility: hidden;
+      flex-direction: column;
+      position: fixed;
+      background-color: white;
+      height: 100lvh;
+      width: 100%;
+      z-index: 2;
+      top: 0;
+      padding: 0 1rem;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    .items__image {
+      align-self: center;
+      height: 50px;
+      img {
+        height: inherit;
+      }
+    }
+    .items__product {
+      display: flex;
+      padding: 0.5rem;
+      gap: 16px;
+      border: 1px solid lightgray;
+      margin-top: 8px;
+      min-height: 80px;
+    }
+    .items__close {
+      align-self: flex-end;
+      margin: 16px 16px 16px 0;
+      color: rgb(224, 131, 9); 
+    }
+    .items__close:active {
+      background-color: rgba(245, 211, 167, 0.228);
+    }
+    .show {
+      visibility: visible;
+    }
+    .fade-in {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="cart cart--collapsed" id="cart">
+    <!-- <img class="cart__item-photo" src="php.webp" alt="imagem do produto"> -->
+    <div class="cart__item-details">
+      <!-- <div class="cart__item-name">
+        Curso PHP avançado
+      </div> -->
+      <div class="cart__item-amount cart__item-amount--hide cart__item-amount--none hideable products">
+        <b>produtos:</b>
+        R$ 125,89
+      </div>
+      <div class="cart__item-amount cart__item-amount--hide cart__item-amount--none hideable discounts">
+        <b>descontos:</b>
+        R$ -12,89
+      </div>
+      <div class="cart__item-amount total cart_item-amount--shirink">
+        <b>total:</b>
+        R$ 113,00
+      </div>
+      <div class="cart__item-amount cart__item-amount--hide cart__item-amount--none hideable installments">
+        <b>parcelamento:</b>
+        10 x R$ 11,30
+      </div>
+    </div>
+    <div class="cart__see-more">
+      <button id="button" onclick="openItems()">
+        <span class="material-symbols-outlined" id="icon">
+          shopping_bag
+        </span>
+      </button>
+    </div>
+  </div>
+  <div class="checkout" id="checkout">
+    <div class="checkout__main">
+      <div class="checkout__datas">
+        <span class="material-symbols-outlined">
+          account_circle
+        </span>
+        <span>Dados pessoais</span>
+      </div>
+      <div class="checkout__set-input">
+        <label class="checkout__label">
+          Nome completo
+        </label>
+        <input class="checkout__input" />
+      </div>
+      <div class="checkout__set-input">
+        <label class="checkout__label">
+          Email
+        </label>
+        <input class="checkout__input" />
+      </div>
+      <div class="checkout__set-input">
+        <label class="checkout__label">
+          Documento de identificação
+        </label>
+        <input class="checkout__input" inputmode="numeric"/>
+      </div>
+    </div>
+   <!--  <div class="checkout__payment">
+      <div class="checkout__datas">
+        <address>Dados do pagamento</address>
+      </div>
+    </div> -->
+    <div class="checkout__actions">
+      <button class="checkout__button">continuar</button>
+    </div>
+  </div>
+  <div class="items" id="items">
+    <div class="items__close" onclick="closeItems()">
+      <span class="material-symbols-outlined">
+        close
+      </span>
+    </div>
+    <div class="items__product">
+      <div class="items__image">
+        <img src="php.webp"/>
+      </div>
+      <div class="items__product-infos">
+        <span>curso PHP avançado</span>
+        <address>R$ 125,89</address>
+      </div>
+    </div>
+    <div class="items__product">
+      <div class="items__image">
+        <img src="php.webp"/>
+      </div>
+      <div class="items__product-infos">
+        <span>curso PHP avançado</span>
+        <address>R$ 125,89</address>
+      </div>
+    </div>
+    <div class="items__product">
+      <div class="items__image">
+        <img src="php.webp"/>
+      </div>
+      <div class="items__product-infos">
+        <span>curso PHP avançado</span>
+        <address>R$ 125,89</address>
+      </div>
+    </div>
+  </div>
+  <script  >
+
+   
+    document.getElementById('cart').addEventListener('click', (e) => { 
+      console.log(e, e.target.id)
+      if (e.target.id !== 'button' && e.target.id !== 'icon') {
+        toggle(e)
+      }
+      e.stopPropagation()
+    })
+
+    function openItems() {
+      const itemsEl = document.getElementById('items')
+      itemsEl.classList.add('show')
+      itemsEl.classList.add('fade-in')
+    }
+    function closeItems() {
+      const itemsEl = document.getElementById('items')
+      itemsEl.classList.remove('fade-in')
+      itemsEl.classList.remove('show')
+    }
+    function toggle(e) {
+      const checkoutEl = document.getElementById('checkout')
+      const cartEl = document.getElementById('cart')
+      const totalEl = document.querySelector('.total')
+      const amountEls = document.querySelectorAll('.hideable')
+
+      if (cartEl.classList.contains('cart--expanded')) {
+        cartEl.classList.remove('cart--expanded')
+        cartEl.classList.add('cart--collapsed')
+        checkoutEl.classList.remove('checkout--shirink')
+        totalEl.classList.add('cart_item-amount--shirink')
+        amountEls.forEach(el => {
+          el.classList.add('cart__item-amount--hide')
+          setTimeout(() => {
+            el.classList.add('cart__item-amount--none')
+          }, 50)
+        })
+        return
+      }
+
+      if (cartEl.classList.contains('cart--collapsed')) {
+        cartEl.classList.remove('cart--collapsed')
+        checkoutEl.classList.add('checkout--shirink')
+        totalEl.classList.remove('cart_item-amount--shirink')
+        amountEls.forEach(el => {
+          el.classList.remove('cart__item-amount--none')
+          setTimeout(() => {
+            el.classList.remove('cart__item-amount--hide')
+          }, 50)
+        })
+        cartEl.classList.add('cart--expanded')
+
+        return
+      }
+    }
+    /* let lastY
+    window.addEventListener('touchmove', (e) => {
+      const cartEl = document.getElementById('cart')
+
+      let touchLocation = e.targetTouches[0]; // Get the first touch point
+      // console.log(touchLocation.clientY, touchLocation.clientY, touchLocation); // Log the position of the touch
+     
+      var currentY = touchLocation.clientY;
+      if(currentY > lastY){
+          // moved down
+        if (Number(cartEl.style.height.replace('px', '')) < 120)
+          cartEl.style.height = (60 + Number(cartEl.style.height.replace('px', ''))) + 'px'
+      } else if(currentY < lastY){
+          // moved up
+        if (Number(cartEl.style.height.replace('px', '') > 51))
+          cartEl.style.height = (Number(cartEl.style.height.replace('px', '')) - 60) + 'px'
+      }
+      lastY = currentY
+    }) */
+  </script>
+</body>
+</html>
+
+
+
+<!-- <div 
+class="am-v3-quantity-select__wrapper"
+>
+  <button
+    :disabled="decrementButtonDisabled"
+    data-test="am-v3-quantity-select:button-decrement"
+    :icon="{
+      name: 'remove',
+      size: 'small',
+      position: 'withLeftIcon'
+    }"
+    size='iconMedium'
+    variant="maxOutlined"
+    @click="decrement"
+  ></button>
+  <input
+    id="am-v3-quantity-select:input"
+    ref="input"
+    v-model="emitterModel"
+    :min="min"
+    :max="max" 
+    :step="1"
+    :readonly="!digitable"
+    :disabled="disabled || minMaxNotAllowed"
+    type="number"
+    class="am-v3-quantity-select__input"
+    :class="{'am-v3-quantity-select__input--disabled': disabled || minMaxNotAllowed }"
+    data-test="am-v3-quantity-select:input"
+    @input="format"
+  >
+  <button
+    :disabled="incrementButtonDisabled"
+    data-test="am-v3-quantity-select:button-increment"
+    :icon="{
+      name: 'add',
+      size: 'small',
+      position: 'withLeftIcon'
+    }"
+    size='iconMedium'
+    variant="maxOutlined"
+    @click="increment"
+  ></button>
+</div> -->
